@@ -1,4 +1,4 @@
-# Admin Paskal 23 Paskal
+# Clinic
 
 ## Installation
 
