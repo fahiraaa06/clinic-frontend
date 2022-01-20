@@ -1,0 +1,8 @@
+authtoken: 23x13p1dG0Em8mIVdLnCknQUYcM_2G1Qb1Zwxuspod628ga6
+tunnels:
+  frondend:
+    addr: 8080
+    proto: http
+  backend:
+    addr: 9000
+    proto: http
