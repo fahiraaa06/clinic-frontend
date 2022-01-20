@@ -1,7 +1,8 @@
 <template>
   <main class="w-full flex-grow p-6">
+      <!-- @click="showModalPasien" -->
     <button
-      @click="showModalEvent"
+      @click="showModal('insert', null)"
       class="block px-3 h-9 hover:text-white focus:ring focus:ring-primary-default focus:ring-opacity-30 focus:outline-none rounded-md text-sm bg-app-default hover:bg-app-light text-white mb-3 font-bold">Add New Event</button>
 
     <div class="w-full lg:w-1/4 pr-0 lg:pr-2">
@@ -51,7 +52,7 @@
             </td>
             <td class="">
               <div class="flex items-center justify-evenly">
-                <button class="" type="button" @click="showModal('update', item)">
+                <button class="" type="button" @click="showModal(item)">
                   <fas icon="pencil-alt" class="text-app-default text-xl" />
                 </button>
                 <button class="" type="button" @click="showModalDestroy(item.id)">
@@ -64,14 +65,145 @@
       </table>
     </div>
 
+    <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+      <div>
+        <p class="text-sm text-gray-700">
+          Showing
+          <span class="font-medium">
+            {{ (table.current_page * table.per_page) - table.per_page + 1 }}
+          </span>
+          to
+          <span class="font-medium">
+            {{ table.current_page * table.per_page }}
+          </span>
+          of
+          <span class="font-medium">{{ table.total }}</span>
+          results
+        </p>
+      </div>
+      <div>
+        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+          <button type="button" @click="previewPage" :disabled="table.current_page === 1" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+            <span class="sr-only">Previous</span>
+            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+          </button>
+
+          <div v-if="Math.ceil(table.total / table.per_page) < 5" class="">
+            <button v-for="pg in Math.ceil(table.total / table.per_page)" :key="pg" @click="findpage(pg)" type="button" aria-current="page" class="z-10 border-indigo-500 relative inline-flex items-center px-4 py-2 border text-sm font-medium" :class="[table.current_page === pg ? 'bg-app-default text-white' : 'bg-white text-black']">
+              {{ pg }}
+            </button>
+          </div>
+          <div v-else class="">
+            <button @click="findpage(1)" type="button" aria-current="page" class="z-10 border-indigo-500 relative inline-flex items-center px-4 py-2 border text-sm font-medium" :class="[table.current_page === 1 ? 'bg-app-default text-white' : 'bg-white text-black']">
+              1
+            </button>
+
+            <button
+              @click="findpage(
+                table.current_page === 1 ? 2 
+                : table.current_page === 2 ? 2
+                : table.current_page === Math.ceil(table.total / table.per_page) ? table.current_page - 3
+                : table.current_page === Math.ceil(table.total / table.per_page) - 1  ? table.current_page - 2
+                : table.current_page - 1
+              )"
+              type="button"
+              aria-current="page"
+              :disabled="Math.ceil(table.total / table.per_page) - 1 === table.current_page"
+              class="z-10 border-indigo-500 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+              :class="[
+              table.current_page === 1 ? 'bg-white text-black' :
+              table.current_page === 2 ? 'bg-app-default text-white' : 'bg-white text-black'
+              ]">
+              {{
+                table.current_page === 1 ? 2 
+                : table.current_page === 2 ? 2
+                : table.current_page === Math.ceil(table.total / table.per_page) ? table.current_page - 3
+                : table.current_page === Math.ceil(table.total / table.per_page) - 1  ? table.current_page - 2
+                : table.current_page - 1
+              }}
+            </button>
+
+            <button
+              @click="findpage(
+                table.current_page === 1 ? 3 
+                : table.current_page === 2 ? 3
+                : table.current_page === Math.ceil(table.total / table.per_page) - 1 ? table.current_page - 1
+                : table.current_page === Math.ceil(table.total / table.per_page) ? table.current_page - 2
+                : table.current_page
+              )"
+              type="button"
+              aria-current="page"
+              :disabled="Math.ceil(table.total / table.per_page) - 1 === table.current_page"
+              class="z-10 border-indigo-500 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+              :class="[
+                table.current_page === Math.ceil(table.total / table.per_page) - 1 ? 'bg-white text-black'
+                : table.current_page === Math.ceil(table.total / table.per_page) ? 'bg-white text-black'
+                : table.current_page === 1 ? 'bg-white text-black'
+                : table.current_page === 2 ? 'bg-white text-black'
+                : 'bg-app-default text-white'
+              ]">
+              {{
+                table.current_page === 1 ? 3 
+                : table.current_page === 2 ? 3
+                : table.current_page === Math.ceil(table.total / table.per_page) - 1 ? table.current_page - 1
+                : table.current_page === Math.ceil(table.total / table.per_page) ? table.current_page - 2
+                : table.current_page
+              }}
+            </button>
+
+            <button
+              @click="findpage(
+                table.current_page === 1 ? 4 
+                : table.current_page === 2 ? 4
+                : table.current_page === Math.ceil(table.total / table.per_page) - 1 ? Math.ceil(table.total / table.per_page) - 1
+                : table.current_page === Math.ceil(table.total / table.per_page) ? table.current_page - 1
+                : table.current_page + 1
+              )"
+              type="button"
+              aria-current="page"
+              :disabled="Math.ceil(table.total / table.per_page) - 1 === table.current_page"
+              class="z-10 border-indigo-500 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+              :class="[
+                table.current_page === Math.ceil(table.total / table.per_page) - 2 ? 'bg-white text-black'
+                : table.current_page === Math.ceil(table.total / table.per_page) - 3 ? 'bg-white text-black'
+                : table.current_page === Math.ceil(table.total / table.per_page) ? 'bg-white text-black' 
+                : table.current_page > 1 && table.current_page < Math.ceil(table.total / table.per_page) - 1 ? 'bg-white text-black'
+                : table.current_page === 1 ? 'bg-white text-black'
+                : 'bg-app-default text-white'
+              ]">
+              {{
+                table.current_page === 1 ? 4 
+                : table.current_page === 2 ? 4
+                : table.current_page === Math.ceil(table.total / table.per_page) - 1 ? Math.ceil(table.total / table.per_page) - 1
+                : table.current_page === Math.ceil(table.total / table.per_page) ? table.current_page - 1
+                : table.current_page + 1
+              }}
+            </button>
+
+            <button @click="findpage(Math.ceil(table.total / table.per_page))" type="button" aria-current="page" class="z-10 border-indigo-500 relative inline-flex items-center px-4 py-2 border text-sm font-medium" :class="[table.current_page === Math.ceil(table.total / table.per_page) ? 'bg-app-default text-white' : 'bg-white text-black']">
+              {{ Math.ceil(table.total / table.per_page) }}
+            </button>
+          </div>
+          <button type="button" @click="nexPage" :disabled="Math.ceil(table.total / table.per_page) === table.current_page"  class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+            <span class="sr-only">Next</span>
+            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </nav>
+      </div>
+    </div>
+
     <!-- modal create -->
-    <div v-if="modalpromotion" class="z-40 overflow-auto left-0 top-0 bottom-0 right-0 w-full h-full fixed">
+    <div v-if="modalPasien" class="z-40 overflow-auto left-0 top-0 bottom-0 right-0 w-full h-full fixed">
       <div class="z-50 relative p-3 mx-auto my-0 max-w-full" style="width: 1000px;">
         <div class="bg-white rounded shadow-lg border flex flex-col overflow-hidden">
           <div class="flex flex-row border-b items-center justify-between">
             <div class="px-6 py-3 text-xl font-bold">Tambah Pasien</div>
             <div class="">
-              <button @click.self="showModalEvent" class="font-3xl font-bold p-6">&times;</button>
+              <button @click.self="showModalPasien" class="font-3xl font-bold p-6">&times;</button>
             </div>
           </div>
           <div class="p-6 flex-grow">
@@ -81,7 +213,7 @@
                 <label class="font-semibold text-black opacity-80">Nama</label>
                 <input
                   v-model="create.name"
-                  @keyup="eventNameChange"
+                  @keyup="pasienNameChange"
                   type="text"
                   class="w-full h-9 px-2 rounded-md border-2 focus:outline-none focus:ring transition duration-200"
                   :class="[errors.name ? 'border-red-400 focus:ring-red-200' : 'border-gray-200 focus:ring-blue-200']"
@@ -106,7 +238,7 @@
                 <label class="font-semibold text-black opacity-80">Alamat</label>
                 <textarea
                   v-model="create.address"
-                  @keyup="eventSecondDescriptionChange"
+                  @keyup="pasienAddressChange"
                   rows="5"
                   class="w-full pl-3 pr-3 py-2 rounded-md border-2 focus:outline-none focus:ring transition duration-200"
                   :class="[errors.address ? 'border-red-400 focus:ring-red-200' : 'border-gray-200 focus:ring-blue-200']"
@@ -120,9 +252,9 @@
           </div>
           <div class="px-6 py-3 border-t">
             <div class="flex justify-end">
-              <button @click.self="showModalEvent" type="button" class="bg-gray-700 text-gray-100 rounded px-4 py-2 mr-1">Cancel</button>
+              <button @click.self="showModalPasien" type="button" class="bg-gray-700 text-gray-100 rounded px-4 py-2 mr-1">Cancel</button>
               <button
-                @click="createEvent"
+                @click="registrasiPasien"
                 type="button"
                 class="bg-blue-600 text-gray-200 rounded px-4 py-2 w-32">
                 {{ saveButton }}
@@ -131,7 +263,7 @@
           </div>
         </div>
       </div>
-      <div @click.self="showModalEvent" class="z-40 overflow-auto left-0 top-0 bottom-0 right-0 w-full h-full fixed bg-black opacity-50"></div>
+      <div @click.self="showModalPasien" class="z-40 overflow-auto left-0 top-0 bottom-0 right-0 w-full h-full fixed bg-black opacity-50"></div>
     </div>
 
     <!-- Modal destroy -->
@@ -150,7 +282,7 @@
           <div class="px-6 py-3 border-t">
             <div class="flex justify-end">
               <button @click.self="closeModalDestroy" type="button" class="bg-green-400 text-gray-100 rounded px-4 py-2 mr-1">Cancel</button>
-              <button @click="deletePromo" type="button" class="bg-red-500 text-gray-200 rounded px-4 py-2 w-32">
+              <button @click="deletePasien" type="button" class="bg-red-500 text-gray-200 rounded px-4 py-2 w-32">
                 Hapus
               </button>
             </div>
@@ -174,7 +306,7 @@
         id: null,
         modalDestroy: false,
         promoCategory: [],
-        modalpromotion: false,
+        modalPasien: false,
         isVideoEdit: false,
         pasien: [],
         tenantList: [],
@@ -213,6 +345,7 @@
           fileCarousel: null,
         },
         create: {
+          id: null,
           name: '',
           event_first_title: '',
           event_first_description: '',
@@ -226,127 +359,57 @@
       }
     },
     methods: {
-      eventNameChange: function (e) {
+      pasienNameChange: function (e) {
         this.create.name = e.target.value
         this.errors.name = false
         this.errors.name_msg = ''
+      },
+      pasienAddressChange: function (e) {
+        this.create.address = e.target.value
+        this.errors.address = false
+        this.errors.address_msg = ''
       },
       showModalDestroy: function (id) {
         this.id = id
         this.modalDestroy = true
       },
-      eventFirstTitleChange: function (e) {
-        this.create.event_first_title = e.target.value
-        this.errors.event_first_title = false
-        this.errors.event_first_title_msg = ''
-      },
-      eventFirstDescriptionChange: function (e) {
-        this.create.event_first_description = e.target.value
-        this.errors.event_first_description = false
-        this.errors.event_first_description_msg = ''
-      },
-      eventSecondTitleChange: function (e) {
-        this.create.event_second_title = e.target.value
-        this.errors.event_second_title = false
-        this.errors.event_second_title_msg = ''
-      },
-      eventSecondDescriptionChange: function (e) {
-        this.create.address = e.target.value
-        this.errors.address = false
-        this.errors.address_msg = ''
-      },
       searchSubscriber: function () {
         this.current_page = 1
         this.per_page = 10
-        this.findEvent()
+        this.findPasien()
       },
       nexPage: function () {
         this.table.current_page = this.table.current_page + 1
-        this.findEvent()
+        this.findPasien()
       },
       previewPage: function () {
         this.table.current_page = this.table.current_page - 1
-        this.findEvent()
+        this.findPasien()
       },
       findpage: function (page) {
         this.table.current_page = page
-        this.findEvent()
+        this.findPasien()
       },
-      detailContent: function (id) {
-        this.$router.push(this.$route.path + "/" + id)
-      },
-      chooseSingleFile: function() {
-        document.getElementById("product_file").click()
-      },
-      removeProductEvent: function () {
-        this.avatar.previewFileProduct = [];
-        this.avatar.fileProduct = [];
-      },
-      chooseFileLocation: function() {
-        document.getElementById("carousel_file").click()
-      },
-      removeCarouselEvent: function () {
-        this.avatar.fileCarousel = null;
-        this.avatar.previewFileCarousel = null;
-      },
-      previewProductEvent: function(event) {
-        let input = event.target;
-        let count = input.files.length;
-        let index = 0;
-        if (input.files) {
-          while(count --) {
-            let reader = new FileReader();
-            reader.onload = (e) => {
-              this.avatar.previewFileProduct.push(e.target.result);
-            }
-            this.avatar.fileProduct.push(input.files[index]);
-            reader.readAsDataURL(input.files[index]);
-            index ++;
-          }
-        }
-        this.errors.event_images = false
-        this.errors.event_images_msg = ''
-      },
-      previewCarouselEvent: function(event) {
-        let input = event.target;
-        if (input.files) {
-          if (this.isVideoExtension(input.files[0].name)) {
-            this.isVideoEdit = true
-          } else {
-            this.isVideoEdit = false
-          }
-          let reader = new FileReader();
-          reader.onload = (e) => {
-            this.avatar.previewFileCarousel = e.target.result;
-          }
-          this.avatar.fileCarousel = input.files[0];
-          reader.readAsDataURL(input.files[0]);
-        }
-        this.errors.event_carousel = false
-        this.errors.event_carousel_msg = ''
-      },
-      showModalEvent: function (){
-        this.avatar = {
-          previewFileProduct: [],
-          fileProduct: [],
-          previewFileCarousel: null,
-          fileCarousel: null,
-        },
+      showModalPasien: function (){
         this.create = {
           name: '',
-          event_first_title: '',
-          event_first_description: '',
-          event_second_title: '',
           address: '',
-          event_start: new Date(),
           bod: new Date(),
-          is_active: true,
         },
-        this.modalpromotion = !this.modalpromotion
+        this.modalPasien = !this.modalPasien
       },
-      findEvent: async function() {
+      showModal: function (val){
+        this.create = {
+          id: val.id,
+          name: val.name,
+          address: val.address,
+          bod: val.bod,
+        }
+        this.modalPasien = !this.modalPasien
+      },
+      findPasien: async function() {
         try {
-          let res = await fetch(`${API}v1/pasien`, {
+          let res = await fetch(`${API}v1/pasien?current_page=${this.table.current_page}&per_page=${this.table.per_page}&search=${this.table.search}`, {
             method: 'GET',
             headers: {
               "Content-Type": "application/json",
@@ -359,11 +422,11 @@
             return
           }
           console.log(respon);
-          this.pasien = respon.data
-          // this.table.current_page = respon.data.current_page
-          // this.table.per_page = respon.data.per_page
-          // // this.table.search = respon.data.search
-          // this.table.total = respon.data.total
+          this.pasien = respon.data.docs
+          this.table.current_page = respon.data.paging.current_page
+          this.table.per_page = respon.data.paging.per_page
+          this.table.search = respon.data.paging.search
+          this.table.total = respon.data.paging.total
         } catch (err) {
           this._error('internal server error')
         }
@@ -371,7 +434,7 @@
       convertTZ: function(date, tzString) {
         return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));   
       },
-      createEvent: async function () {
+      registrasiPasien: async function () {
         this.saveButton = 'Loading...'
         try {
           let res = await fetch(`${API}v1/pasien`, {
@@ -391,16 +454,16 @@
             console.log(response);
             return
           }
-          this.modalpromotion = false
+          this.modalPasien = false
           this.saveButton = 'Save'
-          this.findEvent();
+          this.findPasien();
         } catch (err) {
           this.saveButton = 'Save'
-          this.modalpromotion = false
+          this.modalPasien = false
           this._error('internal server error')
         }
       },
-      deletePromo: async function () {
+      deletePasien: async function () {
         this.deleteButton = 'Loading...'
         try {
           let res = await fetch(`${API}v1/pasien`, {
@@ -421,23 +484,11 @@
           this.modalDestroy = false
           // this.deleteButton = 'Delete'
           // this.$router.push(`/promo`);
-          this.findEvent();
+          this.findPasien();
         } catch (err) {
           this.deleteButton = 'Delete'
           this.modalDestroy = false
           this._error('internal server error')
-        }
-      },
-      isVideoExtension: function (nameFile) {
-        const imageFormat = ['jpg', 'png', 'jpeg', 'gif']
-        const videoFormat = ['mp4', '3gp']
-        let regexExtension = '[^.]+$'
-        let extension = nameFile.toLowerCase().match(regexExtension)
-        if (imageFormat.includes(extension[0])) {
-          return false
-        }
-        if (videoFormat.includes(extension[0])) {
-          return true
         }
       },
       _error: function (message) {
@@ -454,7 +505,7 @@
       }
     },
     created: function(){
-      this.findEvent()
+      this.findPasien()
     }
   }
 </script>
