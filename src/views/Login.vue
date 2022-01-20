@@ -41,8 +41,8 @@
         // email: '23paskal@email.com',
         // password: 'testing123',
         // email: 'konang@email.com',
-        password: 'testing123',
-        email: 'admin@email.com',
+        password: '',
+        email: '',
         errors: {
           email: false,
           email_msg: '',
