@@ -1,11 +1,11 @@
-# Admin Paskal 23 Paskal
+# Clinic
 
 ## Installation
 
 ```bash
-git clone https://gitlab.com/fidev/23paskal/admin-panel.git
+git clone https://github.com/fahiraaa06/clinic-frontend.git
 
-cd admin-panel
+cd clinic-frontend
 
 docker-compose up --build -d
 
