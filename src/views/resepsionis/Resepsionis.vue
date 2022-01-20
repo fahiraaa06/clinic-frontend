@@ -3,7 +3,7 @@
       <!-- @click="showModalPasien" -->
     <button
       @click="showModal('insert', null)"
-      class="block px-3 h-9 hover:text-white focus:ring focus:ring-primary-default focus:ring-opacity-30 focus:outline-none rounded-md text-sm bg-app-default hover:bg-app-light text-white mb-3 font-bold">Add New Event</button>
+      class="block px-3 h-9 hover:text-white focus:ring focus:ring-primary-default focus:ring-opacity-30 focus:outline-none rounded-md text-sm bg-app-default hover:bg-app-light text-white mb-3 font-bold">Tambah Pasien</button>
 
     <div class="w-full lg:w-1/4 pr-0 lg:pr-2">
       <input v-model="table.search" @keyup="searchSubscriber" type="text" class="w-full h-9 px-2 rounded-md border-2 border-gray-200 focus:outline-none focus:ring transition duration-200 mb-5" placeholder="Search name">
