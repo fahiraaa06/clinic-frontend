@@ -1,0 +1,8 @@
+version: "3.9"
+services:
+  vue-admin-paskal:
+    restart: always
+    build: .
+    ports:
+      - "9004:80"
+      

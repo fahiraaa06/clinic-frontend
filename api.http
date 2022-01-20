@@ -1,0 +1,11 @@
+GET https://example.com/comments?page=2&pageSize=10
+
+###
+
+POST https://api.23paskal.fiture.id/v1/login HTTP/1.1
+content-type: application/json
+
+{
+    "email":"23paskal@email.com",
+    "password": "testing123"
+}
