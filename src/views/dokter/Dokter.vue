@@ -1,9 +1,6 @@
 <template>
   <main class="w-full flex-grow p-6">
-    <button
-      @click="showModalEvent"
-      class="block px-3 h-9 hover:text-white focus:ring focus:ring-primary-default focus:ring-opacity-30 focus:outline-none rounded-md text-sm bg-app-default hover:bg-app-light text-white mb-3 font-bold">Tambah Rekam Medis</button>
-
+    
     <div class="w-full lg:w-1/4 pr-0 lg:pr-2">
       <input v-model="table.search" @keyup="searchSubscriber" type="text" class="w-full h-9 px-2 rounded-md border-2 border-gray-200 focus:outline-none focus:ring transition duration-200 mb-5" placeholder="Search name">
     </div>
@@ -16,16 +13,10 @@
               <span class="text-gray-100 font-semibold">No</span>
             </th>
             <th class="px-16 py-2">
-              <span class="text-gray-100 font-semibold">Tanggal</span>
+              <span class="text-gray-100 font-semibold">Nama</span>
             </th>
             <th class="px-16 py-2">
-              <span class="text-gray-100 font-semibold">keluhan</span>
-            </th>
-            <th class="px-16 py-2">
-              <span class="text-gray-100 font-semibold">diagnosa</span>
-            </th>
-            <th class="px-16 py-2">
-              <span class="text-gray-100 font-semibold">resep obat</span>
+              <span class="text-gray-100 font-semibold">Dokter</span>
             </th>
             <th class="px-16 py-2">
               <span class="text-gray-100 font-semibold">Option</span>
@@ -219,31 +210,6 @@
                   {{ errors.event_name_msg }}
                 </div>
               </div>
-              <!-- <div class="w-full lg:w-1/2 pr-0 lg:pr-2">
-                <label class="font-semibold text-black opacity-80">Tempat Lahir</label>
-                <input
-                  v-model="create.event_first_title"
-                  @keyup="eventFirstTitleChange"
-                  type="text"
-                  class="w-full h-9 px-2 rounded-md border-2 focus:outline-none focus:ring transition duration-200"
-                  :class="[errors.event_first_title ? 'border-red-400 focus:ring-red-200' : 'border-gray-200 focus:ring-blue-200']"
-                  placeholder="Name">
-                <div class="text-sm text-red-600 mb-5">
-                  {{ errors.event_first_title_msg }}
-                </div>
-              </div>
-              <div class="w-full lg:w-1/2 pr-0 lg:pr-2">
-                <label class="font-semibold text-black opacity-80">Tanggal Lahir</label>
-                <v-date-picker timezone="" v-model="create.event_end" mode="date" is24hr>
-                  <template v-slot="{ inputValue, inputEvents }">
-                    <input
-                      class="px-2 py-1 border-2 border-gray-200 rounded focus:outline-none focus:border-blue-300 w-full"
-                      :value="inputValue"
-                      v-on="inputEvents"
-                    />
-                  </template>
-                </v-date-picker>
-              </div> -->
               <div class="w-full pr-0 lg:pr-2">
                 <label class="font-semibold text-black opacity-80">Keluhan</label>
                 <textarea
@@ -414,56 +380,6 @@
       detailContent: function (id) {
         this.$router.push(this.$route.path + "/pasien/" + id)
       },
-      chooseSingleFile: function() {
-        document.getElementById("product_file").click()
-      },
-      removeProductEvent: function () {
-        this.avatar.previewFileProduct = [];
-        this.avatar.fileProduct = [];
-      },
-      chooseFileLocation: function() {
-        document.getElementById("carousel_file").click()
-      },
-      removeCarouselEvent: function () {
-        this.avatar.fileCarousel = null;
-        this.avatar.previewFileCarousel = null;
-      },
-      previewProductEvent: function(event) {
-        let input = event.target;
-        let count = input.files.length;
-        let index = 0;
-        if (input.files) {
-          while(count --) {
-            let reader = new FileReader();
-            reader.onload = (e) => {
-              this.avatar.previewFileProduct.push(e.target.result);
-            }
-            this.avatar.fileProduct.push(input.files[index]);
-            reader.readAsDataURL(input.files[index]);
-            index ++;
-          }
-        }
-        this.errors.event_images = false
-        this.errors.event_images_msg = ''
-      },
-      previewCarouselEvent: function(event) {
-        let input = event.target;
-        if (input.files) {
-          if (this.isVideoExtension(input.files[0].name)) {
-            this.isVideoEdit = true
-          } else {
-            this.isVideoEdit = false
-          }
-          let reader = new FileReader();
-          reader.onload = (e) => {
-            this.avatar.previewFileCarousel = e.target.result;
-          }
-          this.avatar.fileCarousel = input.files[0];
-          reader.readAsDataURL(input.files[0]);
-        }
-        this.errors.event_carousel = false
-        this.errors.event_carousel_msg = ''
-      },
       showModalEvent: function (){
         this.avatar = {
           previewFileProduct: [],
@@ -497,7 +413,7 @@
             this._error('internal server error')
             return
           }
-          console.log(respon.data);
+          console.log(respon);
           this.promotions = respon.data.docs
           this.table.current_page = respon.data.paging.current_page
           this.table.per_page = respon.data.paging.per_page
@@ -509,101 +425,6 @@
       },
       convertTZ: function(date, tzString) {
         return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));   
-      },
-      createEvent: async function () {
-        this.saveButton = 'Loading...'
-        let formdata = new FormData();
-        formdata.append("event_name", this.create.event_name);
-        formdata.append("event_first_title", this.create.event_first_title);
-        formdata.append("event_first_description", this.create.event_first_description);
-        formdata.append("event_second_title", this.create.event_second_title);
-        formdata.append("event_second_description", this.create.event_second_description);
-        formdata.append("event_start", this.create.event_start);
-        formdata.append("event_end", this.create.event_end);
-        formdata.append("is_active", this.create.is_active);
-        this.avatar.fileProduct.map((product) => {
-          formdata.append("event_images", product);
-        });
-        formdata.append("event_carousel", this.avatar.fileCarousel);
-        try {
-          let res = await fetch(`${API}v1/event`, {
-            method: 'POST',
-            headers: {
-              "Authorization": `Bearer ${localStorage.getItem('access_token')}`,
-            },
-            body: formdata,
-          });
-          const response = await res.json();
-          if (response.status !== 200) {
-            if (response.message === 'ERR_FORM') {
-              response.data.map((item) => {
-                if (item.key === 'event_images'){
-                  this.errors.event_images = true
-                  this.errors.event_images_msg = item.message
-                }
-                if (item.key === 'event_carousel'){
-                  this.errors.event_carousel = true
-                  this.errors.event_carousel_msg = item.message
-                }
-                if (item.key === 'event_name'){
-                  this.errors.event_name = true
-                  this.errors.event_name_msg = item.message
-                }
-                if (item.key === 'event_first_title'){
-                  this.errors.event_first_title = true
-                  this.errors.event_first_title_msg = item.message
-                }
-                if (item.key === 'event_first_description'){
-                  this.errors.event_first_description = true
-                  this.errors.event_first_description_msg = item.message
-                }
-                if (item.key === 'event_second_title'){
-                  this.errors.event_second_title = true
-                  this.errors.event_second_title_msg = item.message
-                }
-                if (item.key === 'event_second_description'){
-                  this.errors.event_second_description = true
-                  this.errors.event_second_description_msg = item.message
-                }
-                if (item.key === 'event_start'){
-                  this.errors.event_start = true
-                  this.errors.event_start_msg = item.message
-                }
-                if (item.key === 'event_end'){
-                  this.errors.event_end = true
-                  this.errors.event_end_msg = item.message
-                }
-                if (item.key === 'is_active'){
-                  this.errors.is_active = true
-                  this.errors.is_active_msg = item.message
-                }
-              })
-              this.saveButton = 'Save'
-              return
-            }
-            this.saveButton = 'Save'
-            return
-          }
-          this.modalpromotion = false
-          this.saveButton = 'Save'
-          this.findEvent();
-        } catch (err) {
-          this.saveButton = 'Save'
-          this.modalpromotion = false
-          this._error('internal server error')
-        }
-      },
-      isVideoExtension: function (nameFile) {
-        const imageFormat = ['jpg', 'png', 'jpeg', 'gif']
-        const videoFormat = ['mp4', '3gp']
-        let regexExtension = '[^.]+$'
-        let extension = nameFile.toLowerCase().match(regexExtension)
-        if (imageFormat.includes(extension[0])) {
-          return false
-        }
-        if (videoFormat.includes(extension[0])) {
-          return true
-        }
       },
       _error: function (message) {
         this.$store.dispatch('warning', {

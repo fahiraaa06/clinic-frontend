@@ -2,12 +2,12 @@
   <main class="w-full flex-grow p-6">
     <div class="flex justify-between items-center">
       <div class="">
-        <h1 class="text-3xl font-bold text-app-default">Tenan/Detail</h1>
+        <h1 class="text-3xl font-bold text-app-default">Detail</h1>
       </div>
       <div class="flex">
-        <div @click="showModalDestroy" class="mr-5 cursor-pointer">
+        <!-- <div @click="showModalDestroy" class="mr-5 cursor-pointer">
           <fas icon="trash-alt" class="text-red-600 text-2xl" />
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -15,7 +15,7 @@
       <div class="leading-loose">
         <div class="p-5 bg-white rounded shadow-xl">
           <div class="flex justify-between border-b-2 mb-5 pb-5">
-            <div class="font-bold text-2xl">Content</div>
+            <div class="font-bold text-2xl">Pasien</div>
             <div @click="showModalEditContentTenant" class="mr-5 cursor-pointer">
               <fas icon="pencil-alt" class="text-app-default text-2xl" />
             </div>
@@ -37,7 +37,10 @@
       <div class="leading-loose">
         <div class="p-5 bg-white rounded shadow-xl">
           <div class="flex justify-between border-b-2 mb-5 pb-5">
-            <div class="font-bold text-2xl">medicalRecord</div>
+            <div class="font-bold text-2xl">Medical Record</div>
+            <div @click="showModalEvent" class="mr-5 cursor-pointer">
+              <fas icon="pencil-alt" class="text-app-default text-2xl" />
+            </div>
           </div>
           <div v-for="pr in medicalRecord" :key="pr.id" class="rounded-md p-2 mb-4 border-b-2">
             <div class="font-semibold">createdAt</div>
@@ -49,6 +52,11 @@
             <div class="font-semibold">medical_record</div>
             <div v-if="pr.medical_record !== ''" class="ml-5">{{ pr.medical_record }}</div>
             <div v-else class="ml-5">-</div>
+            <div class="font-semibold">obat_name</div>
+            <div v-for="ob in pr.obats" :key="ob.id" class="rounded-md p-1 mb-1">
+              <div v-if="ob.obat_name !== ''" class="ml-5">{{ ob.obat_name }}</div>
+              <div v-else class="ml-5">-</div>
+            </div>
           </div>
         </div>
       </div>
@@ -114,6 +122,79 @@
       <div @click.self="showModalUpdateLocation" class="z-40 overflow-auto left-0 top-0 bottom-0 right-0 w-full h-full fixed bg-black opacity-50"></div>
     </div>
 
+    <!-- modal create -->
+    <div v-if="modalpromotion" class="z-40 overflow-auto left-0 top-0 bottom-0 right-0 w-full h-full fixed">
+      <div class="z-50 relative p-3 mx-auto my-0 max-w-full" style="width: 1000px;">
+        <div class="bg-white rounded shadow-lg border flex flex-col overflow-hidden">
+          <div class="flex flex-row border-b items-center justify-between">
+            <div class="px-6 py-3 text-xl font-bold">Tambah Rekam Medis</div>
+            <div class="">
+              <button @click.self="showModalEvent" class="font-3xl font-bold p-6">&times;</button>
+            </div>
+          </div>
+          <div class="p-6 flex-grow">
+            <div class="flex flex-wrap">
+              <div class="w-full pr-0 lg:pr-2">
+                <label class="font-semibold text-black opacity-80">Keluhan</label>
+                <textarea
+                  v-model="create.event_first_description"
+                  @keyup="eventFirstDescriptionChange"
+                  rows="5"
+                  class="w-full pl-3 pr-3 py-2 rounded-md border-2 focus:outline-none focus:ring transition duration-200"
+                  :class="[errors.event_first_description ? 'border-red-400 focus:ring-red-200' : 'border-gray-200 focus:ring-blue-200']"
+                  placeholder="Description">
+                </textarea>
+                <div class="text-sm text-red-600 mb-5">
+                  {{ errors.event_first_description_msg }}
+                </div>
+              </div>
+              <div class="w-full pr-0 lg:pr-2">
+                <label class="font-semibold text-black opacity-80">Diagnosa</label>
+                <textarea
+                  v-model="create.event_second_description"
+                  @keyup="eventSecondDescriptionChange"
+                  rows="5"
+                  class="w-full pl-3 pr-3 py-2 rounded-md border-2 focus:outline-none focus:ring transition duration-200"
+                  :class="[errors.event_second_description ? 'border-red-400 focus:ring-red-200' : 'border-gray-200 focus:ring-blue-200']"
+                  placeholder="Description">
+                </textarea>
+                <div class="text-sm text-red-600 mb-5">
+                  {{ errors.event_second_description_msg }}
+                </div>
+              </div>
+              <div class="w-full pr-0 lg:pr-2">
+                <label class="font-semibold text-black opacity-80">Resep Obat</label>
+                <textarea
+                  v-model="create.event_second_description"
+                  @keyup="eventSecondDescriptionChange"
+                  rows="5"
+                  class="w-full pl-3 pr-3 py-2 rounded-md border-2 focus:outline-none focus:ring transition duration-200"
+                  :class="[errors.event_second_description ? 'border-red-400 focus:ring-red-200' : 'border-gray-200 focus:ring-blue-200']"
+                  placeholder="Description">
+                </textarea>
+                <div class="text-sm text-red-600 mb-5">
+                  {{ errors.event_second_description_msg }}
+                </div>
+              </div>
+              
+            </div>
+          </div>
+          <div class="px-6 py-3 border-t">
+            <div class="flex justify-end">
+              <button @click.self="showModalEvent" type="button" class="bg-gray-700 text-gray-100 rounded px-4 py-2 mr-1">Cancel</button>
+              <button
+                @click="createEvent"
+                type="button"
+                class="bg-blue-600 text-gray-200 rounded px-4 py-2 w-32">
+                {{ saveButton }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div @click.self="showModalEvent" class="z-40 overflow-auto left-0 top-0 bottom-0 right-0 w-full h-full fixed bg-black opacity-50"></div>
+    </div>
+
     <Warning />
 
   </main>
@@ -137,6 +218,7 @@
         modalDestroy: false,
         modalTenantInfo: false,
         modalUploadAvatar: false,
+        modalpromotion: false,
         errors: {
           user_id: false,
           tenant_image: false,
@@ -162,6 +244,16 @@
           tenant_description_msg: '',
           tenant_floor_location_msg: '',
           is_active_msg: '',
+        },
+        create: {
+          event_name: '',
+          event_first_title: '',
+          event_first_description: '',
+          event_second_title: '',
+          event_second_description: '',
+          event_start: new Date(),
+          event_end: new Date(),
+          is_active: true,
         },
         dropDown: {
           isOpen: false,
@@ -250,6 +342,19 @@
         this.errors.tenant_floor_location_msg = ''
         this.errors.tenant_floor_location = false
         this.floorDropDown.selected = val.name
+      },
+      showModalEvent: function (){
+        // this.create = {
+        //   event_name: '',
+        //   event_first_title: '',
+        //   event_first_description: '',
+        //   event_second_title: '',
+        //   event_second_description: '',
+        //   event_start: new Date(),
+        //   event_end: new Date(),
+        //   is_active: true,
+        // },
+        this.modalpromotion = !this.modalpromotion
       },
       chooseFileAvatar: function() {
         document.getElementById("avatar_file").click()

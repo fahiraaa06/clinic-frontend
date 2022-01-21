@@ -55,7 +55,7 @@ router.beforeEach(async (to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if(localStorage.getItem('access_token') === null) {
       localStorage.removeItem('access_token')
-      localStorage.removeItem('refresh_token')
+      // localStorage.removeItem('refresh_token')
       next({
         name: 'Login',
       })

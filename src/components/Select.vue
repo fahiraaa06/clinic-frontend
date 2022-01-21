@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full lg:w-1/2 pr-0 lg:pr-2 relative">
+  <div class="w-full pr-0 lg:pr-2 relative">
     <label class="font-semibold text-black opacity-80">{{ title }}</label>
     <div
       @click="openSelect"

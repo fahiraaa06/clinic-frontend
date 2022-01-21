@@ -92,8 +92,8 @@ export default {
   },
   created: function () {
     // filter role
-    console.log(this.$store.state.role);
-    console.log(this.$store.state.isAdmin);
+    // console.log(this.$store.state.role);
+    // console.log(this.$store.state.isAdmin);
     this.role = this.$store.state.role.split("_").join(' ');
     if (!this.$store.state.isAdmin) {
       this.menuList = this.menuList.filter(

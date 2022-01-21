@@ -1,6 +1,6 @@
 <template>
   <main class="w-full flex-grow p-6">
-      <!-- @click="showModalPasien" -->
+    
     <button
       @click="showModal('insert', null)"
       class="block px-3 h-9 hover:text-white focus:ring focus:ring-primary-default focus:ring-opacity-30 focus:outline-none rounded-md text-sm bg-app-default hover:bg-app-light text-white mb-3 font-bold">Tambah Pasien</button>
@@ -201,33 +201,34 @@
           <div class="p-6 flex-grow">
             
             <div class="flex flex-wrap">
-              <div class="w-full pr-0 lg:pr-2">
-                <label class="font-semibold text-black opacity-80">Nama</label>
-                <input
-                  v-model="create.name"
-                  @keyup="pasienNameChange"
-                  type="text"
-                  class="w-full h-9 px-2 rounded-md border-2 focus:outline-none focus:ring transition duration-200"
-                  :class="[errors.name ? 'border-red-400 focus:ring-red-200' : 'border-gray-200 focus:ring-blue-200']"
-                  placeholder="Name">
-                <div class="text-sm text-red-600 mb-5">
-                  {{ errors.name_msg }}
-                </div>
+              <div class="w-full">
+                <Select
+                  :selectItem="selectItem"
+                  :data="dropDown.dataSelect"
+                  :open="dropDown.isOpen"
+                  :selected="dropDown.selected"
+                  :openSelect="openSelect"
+                  :search="onSearch"
+                  :inputSearch="dropDown.inputSearch"
+                  :id="create.tenant_id"
+                  :isError="errors.tenant_id"
+                  :errorMessage="errors.tenant_id_msg"
+                  :title="dropDown.title" />
               </div>
-              <div class="w-full lg:w-1/2 pr-0 lg:pr-2 mb-3">
-                <label class="font-semibold text-black opacity-80">Tanggal Lahir</label>
-                <v-date-picker timezone="" v-model="create.bod" mode="date" is24hr>
-                  <template v-slot="{ inputValue, inputEvents }">
-                    <input
-                      class="px-2 py-1 border-2 border-gray-200 rounded focus:outline-none focus:border-blue-300 w-full"
-                      :value="inputValue"
-                      v-on="inputEvents"
-                    />
-                  </template>
-                </v-date-picker>
+              <div class="w-full">
+                <Select
+                  :selectItem="categorySelectItem"
+                  :data="categoryDropDown.dataSelect"
+                  :open="categoryDropDown.isOpen"
+                  :selected="categoryDropDown.selected"
+                  :openSelect="categoryOpenSelect"
+                  :id="create.category_promotion_id"
+                  :isError="errors.category_promotion_id"
+                  :errorMessage="errors.category_promotion_id_msg"
+                  :title="categoryDropDown.title" />
               </div>
               <div class="w-full pr-0 lg:pr-2">
-                <label class="font-semibold text-black opacity-80">Alamat</label>
+                <label class="font-semibold text-black opacity-80">Keluhan</label>
                 <textarea
                   v-model="create.address"
                   @keyup="pasienAddressChange"
@@ -289,9 +290,11 @@
 
 <script>
   import API from '../../api';
+  import Select from '../../components/Select.vue';
   export default {
     name: 'Event',
     components: {
+      Select,
     },
 		data() {
       return{
@@ -300,8 +303,24 @@
         promoCategory: [],
         modalPasien: false,
         isVideoEdit: false,
+        modalpromotion: false,
         pasien: [],
         tenantList: [],
+        not_premium_event: [],
+        dropDown: {
+          isOpen: false,
+          inputSearch: true,
+          dataSelect: [],
+          title: 'Pasien',
+          selected: 'pilih sesuatu',
+        },
+        categoryDropDown: {
+          isOpen: false,
+          inputSearch: true,
+          dataSelect: [],
+          title: 'Dokter',
+          selected: 'pilih sesuatu',
+        },
         errors: {
           event_images: false,
           event_carousel: false,
@@ -348,9 +367,40 @@
           is_active: true,
         },
         saveButton: 'Save',
+        update: {
+          tenan_category_id: null,
+        }
       }
     },
     methods: {
+      openSelect: function () {
+        this.dropDown.isOpen = !this.dropDown.isOpen
+      },
+      selectItem: function (val) {
+        this.dropDown.isOpen = false
+        this.create.tenant_id = val.id
+        this.dropDown.selected = val.name
+        this.errors.tenant_id = false
+        this.errors.tenant_id_msg = ''
+      },
+      categoryOpenSelect: function () {
+        this.categoryDropDown.isOpen = !this.categoryDropDown.isOpen
+      },
+      categorySelectItem: function (val) {
+        this.categoryDropDown.isOpen = false
+        this.create.category_promotion_id = val.id
+        this.categoryDropDown.selected = val.name
+        this.errors.category_promotion_id = false
+        this.errors.category_promotion_id_msg = ''
+      },
+      onSearch: function (val) {
+        this.findPasien(val)
+      },
+      searchSubscriber: function () {
+        this.current_page = 1
+        this.per_page = 10
+        this.findPromotions()
+      },
       pasienNameChange: function (e) {
         this.create.name = e.target.value
         this.errors.name = false
@@ -365,22 +415,20 @@
         this.id = id
         this.modalDestroy = true
       },
-      searchSubscriber: function () {
-        this.current_page = 1
-        this.per_page = 10
-        this.findPasien()
+      showModalEvent: function (){
+        this.modalpromotion = !this.modalpromotion
       },
       nexPage: function () {
         this.table.current_page = this.table.current_page + 1
-        this.findPasien()
+        this.findVisitor()
       },
       previewPage: function () {
         this.table.current_page = this.table.current_page - 1
-        this.findPasien()
+        this.findVisitor()
       },
       findpage: function (page) {
         this.table.current_page = page
-        this.findPasien()
+        this.findVisitor()
       },
       showModalPasien: function (){
         this.create = {
@@ -403,7 +451,7 @@
         }
         this.modalPasien = !this.modalPasien
       },
-      findPasien: async function() {
+      findVisitor: async function() {
         try {
           let res = await fetch(`${API}v1/visitors?current_page=${this.table.current_page}&per_page=${this.table.per_page}&search=${this.table.search}`, {
             method: 'GET',
@@ -452,7 +500,7 @@
           }
           this.modalPasien = false
           this.saveButton = 'Save'
-          this.findPasien();
+          this.findVisitor();
         } catch (err) {
           this.saveButton = 'Save'
           this.modalPasien = false
@@ -480,10 +528,53 @@
           this.modalDestroy = false
           // this.deleteButton = 'Delete'
           // this.$router.push(`/promo`);
-          this.findPasien();
+          this.findVisitor();
         } catch (err) {
           this.deleteButton = 'Delete'
           this.modalDestroy = false
+          this._error('internal server error')
+        }
+      },
+      findDokter: async function() {
+        try {
+          let res = await fetch(`${API}v1/dokter`, {
+            method: 'GET',
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${localStorage.getItem('access_token')}`,
+            },
+          });
+          let respon = await res.json();
+          if (respon.status !== 200) {
+            this._error('internal server error')
+            return
+          }
+          this.categoryDropDown.dataSelect = respon.data.docs.map((itm) => {
+            return {
+              id: itm.id,
+              name: itm.dokter_name,
+            }
+          })
+        } catch (err) {
+          this._error('internal server error')
+        }
+      },
+      findPasien: async function(keword) {
+        try {
+          let res = await fetch(`${API}v1/pasien?search=${keword}`, {
+            method: 'GET',
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${localStorage.getItem('access_token')}`,
+            },
+          });
+          let respon = await res.json();
+          if (respon.status !== 200) {
+            this._error('internal server error')
+            return
+          }
+          this.dropDown.dataSelect = respon.data.docs
+        } catch (err) {
           this._error('internal server error')
         }
       },
@@ -501,7 +592,9 @@
       }
     },
     created: function(){
-      this.findPasien()
+      this.findVisitor()
+      this.findPasien('')
+      this.findDokter()
     }
   }
 </script>
