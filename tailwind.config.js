@@ -6,8 +6,8 @@ module.exports = {
     extend: {
       colors: {
         app: {
-          light: '#3d68ff',
-          default: '#1947ee',
+          light: '#051622',
+          default: '#373A36',
           dark: '#0038fd',
           hover: '#3d68ff',
         },
