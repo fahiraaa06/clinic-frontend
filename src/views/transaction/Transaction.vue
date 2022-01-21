@@ -572,7 +572,7 @@
       }
     },
     created: function(){
-      this.findEvent()
+      // this.findEvent()
     }
   }
 </script>

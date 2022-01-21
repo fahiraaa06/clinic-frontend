@@ -48,9 +48,9 @@
       doLogout: async function () {
         this.btnTitle = 'Loading...'
         await localStorage.removeItem('access_token')
-        await localStorage.removeItem('refresh_token')
+        // await localStorage.removeItem('refresh_token')
         await this.$store.dispatch('login', false)
-        await this.$store.dispatch('role', null)
+        // await this.$store.dispatch('role', null)
         this.$router.push('/login');
       },
     },

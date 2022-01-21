@@ -38,11 +38,11 @@
 		name: 'Login',
 		data() {
       return{
-        // email: '23paskal@email.com',
-        // password: 'testing123',
+        email: 'admin@email.com',
+        password: 'testing123',
         // email: 'konang@email.com',
-        password: '',
-        email: '',
+        // password: '',
+        // email: '',
         errors: {
           email: false,
           email_msg: '',
@@ -79,9 +79,9 @@
             }),
           });
           let respon = await res.json();
-          console.log(respon.data.role);
-          await localStorage.setItem('access_token', respon.data.access_token)
-          await localStorage.setItem('refresh_token', respon.data.refresh_token)
+          console.log(respon.data.token);
+          await localStorage.setItem('access_token', respon.data.token)
+          // await localStorage.setItem('refresh_token', respon.data.refresh_token)
           await this.$store.dispatch('login', true)
           if (respon.data.role === 'super_user'){
             await this.$store.dispatch('admin', true)

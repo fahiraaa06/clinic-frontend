@@ -17,8 +17,16 @@ const routes = [
         component: () => import('../views/dokter/Dokter.vue')
       },
       {
+        path: '/dokter/pasien/:id',
+        component: () => import('../views/dokter/DetailPasien.vue')
+      },
+      {
         path: '/resepsionis',
         component: () => import('../views/resepsionis/Resepsionis.vue')
+      },
+      {
+        path: '/visitors',
+        component: () => import('../views/visitor/Visitor.vue')
       },
       {
         path: '/transaction',

@@ -398,6 +398,10 @@
         },
         this.modalPasien = !this.modalPasien
       },
+      closeModalDestroy: function (){
+        this.id = null
+        this.modalDestroy = false
+      },
       showModal: function (val){
         this.create = {
           id: val.id,
