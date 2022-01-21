@@ -2,7 +2,7 @@
   <main class="w-full flex-grow p-6">
     <button
       @click="showModalEvent"
-      class="block px-3 h-9 hover:text-white focus:ring focus:ring-primary-default focus:ring-opacity-30 focus:outline-none rounded-md text-sm bg-app-default hover:bg-app-light text-white mb-3 font-bold">Add New Event</button>
+      class="block px-3 h-9 hover:text-white focus:ring focus:ring-primary-default focus:ring-opacity-30 focus:outline-none rounded-md text-sm bg-app-default hover:bg-app-light text-white mb-3 font-bold">Tambah Rekam Medis</button>
 
     <div class="w-full lg:w-1/4 pr-0 lg:pr-2">
       <input v-model="table.search" @keyup="searchSubscriber" type="text" class="w-full h-9 px-2 rounded-md border-2 border-gray-200 focus:outline-none focus:ring transition duration-200 mb-5" placeholder="Search name">
@@ -16,10 +16,16 @@
               <span class="text-gray-100 font-semibold">No</span>
             </th>
             <th class="px-16 py-2">
-              <span class="text-gray-100 font-semibold">Name</span>
+              <span class="text-gray-100 font-semibold">Tanggal</span>
             </th>
             <th class="px-16 py-2">
-              <span class="text-gray-100 font-semibold">Avatar</span>
+              <span class="text-gray-100 font-semibold">keluhan</span>
+            </th>
+            <th class="px-16 py-2">
+              <span class="text-gray-100 font-semibold">diagnosa</span>
+            </th>
+            <th class="px-16 py-2">
+              <span class="text-gray-100 font-semibold">resep obat</span>
             </th>
             <th class="px-16 py-2">
               <span class="text-gray-100 font-semibold">Option</span>
@@ -195,7 +201,7 @@
       <div class="z-50 relative p-3 mx-auto my-0 max-w-full" style="width: 1000px;">
         <div class="bg-white rounded shadow-lg border flex flex-col overflow-hidden">
           <div class="flex flex-row border-b items-center justify-between">
-            <div class="px-6 py-3 text-xl font-bold">Tambah Pasien</div>
+            <div class="px-6 py-3 text-xl font-bold">Tambah Rekam Medis</div>
             <div class="">
               <button @click.self="showModalEvent" class="font-3xl font-bold p-6">&times;</button>
             </div>
@@ -216,7 +222,7 @@
                   {{ errors.event_name_msg }}
                 </div>
               </div>
-              <div class="w-full lg:w-1/2 pr-0 lg:pr-2">
+              <!-- <div class="w-full lg:w-1/2 pr-0 lg:pr-2">
                 <label class="font-semibold text-black opacity-80">Tempat Lahir</label>
                 <input
                   v-model="create.event_first_title"
@@ -240,7 +246,7 @@
                     />
                   </template>
                 </v-date-picker>
-              </div>
+              </div> -->
               <div class="w-full pr-0 lg:pr-2">
                 <label class="font-semibold text-black opacity-80">Keluhan</label>
                 <textarea
@@ -256,7 +262,7 @@
                 </div>
               </div>
               <div class="w-full pr-0 lg:pr-2">
-                <label class="font-semibold text-black opacity-80">Diaknosa</label>
+                <label class="font-semibold text-black opacity-80">Diagnosa</label>
                 <textarea
                   v-model="create.event_second_description"
                   @keyup="eventSecondDescriptionChange"
@@ -270,7 +276,7 @@
                 </div>
               </div>
               <div class="w-full pr-0 lg:pr-2">
-                <label class="font-semibold text-black opacity-80">Obat</label>
+                <label class="font-semibold text-black opacity-80">Resep Obat</label>
                 <textarea
                   v-model="create.event_second_description"
                   @keyup="eventSecondDescriptionChange"

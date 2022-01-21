@@ -16,7 +16,7 @@
         to="/"
         class="text-white font-semibold uppercase hover:text-gray-300"
       >
-        {{ this.$store.state.role.replace("_", " ") }}
+      {{ role }}
       </router-link>
     </div>
     <nav class="text-white text-base font-semibold pt-3">
@@ -48,34 +48,35 @@ export default {
   name: "SideBar",
   data() {
     return {
+      role: "",
       menuList: [
         {
-          title: "Dashbord",
-          icon: "sticky-note",
+          title: "Dashboard",
+          icon: "columns",
           link: `/`,
           role: null,
         },
         {
           title: "Pasien",
-          icon: "sticky-note",
+          icon: "user-injured",
           link: `/resepsionis`,
           role: "resepsionis",
         },
         {
           title: "Visitor",
-          icon: "sticky-note",
+          icon: "book-reader",
           link: `/visitors`,
           role: "resepsionis",
         },
         {
           title: "Dokter",
-          icon: "sticky-note",
+          icon: "book-medical",
           link: `/dokter`,
           role: "dokter",
         },
         {
           title: "Kasir",
-          icon: "code-branch",
+          icon: "money-check",
           link: `/transaction`,
           role: "kasir",
         },
@@ -93,6 +94,7 @@ export default {
     // filter role
     console.log(this.$store.state.role);
     console.log(this.$store.state.isAdmin);
+    this.role = this.$store.state.role.split("_").join(' ');
     if (!this.$store.state.isAdmin) {
       this.menuList = this.menuList.filter(
         (item) => item.role === this.$store.state.role || item.role === null
