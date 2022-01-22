@@ -63,19 +63,19 @@ export default {
           role: "resepsionis",
         },
         {
-          title: "Visitor",
+          title: "Kunjungan",
           icon: "book-reader",
           link: `/visitors`,
           role: "resepsionis",
         },
         {
-          title: "Dokter",
+          title: "Rekam Medis",
           icon: "book-medical",
           link: `/dokter`,
           role: "dokter",
         },
         {
-          title: "Kasir",
+          title: "Transaksi",
           icon: "money-check",
           link: `/transaction`,
           role: "kasir",

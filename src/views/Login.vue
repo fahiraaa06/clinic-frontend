@@ -38,8 +38,8 @@
 		name: 'Login',
 		data() {
       return{
-        email: 'admin@email.com',
-        password: 'testing123',
+        email: '',
+        password: '',
         // email: 'konang@email.com',
         // password: '',
         // email: '',
