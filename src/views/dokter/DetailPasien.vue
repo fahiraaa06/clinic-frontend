@@ -23,7 +23,7 @@
           <div class="font-semibold">Name</div>
           <div v-if="content.tenant_name !== ''" class="ml-5">{{ content.name }}</div>
           <div v-else class="ml-5">-</div>
-          <div class="font-semibold">dokter_name</div>
+          <div class="font-semibold">Dokter Name</div>
           <div v-if="content.dokter_name !== ''" class="ml-5">{{ content.dokter_name }}</div>
           <div v-else class="ml-5">-</div>
           <div class="font-semibold">status</div>
@@ -93,7 +93,7 @@
       <div class="z-50 relative p-3 mx-auto my-0 max-w-full" style="width: 800px;">
         <div class="bg-white rounded shadow-lg border flex flex-col overflow-hidden">
           <div class="flex flex-row border-b items-center justify-between">
-            <div class="px-6 py-3 text-xl font-bold">Update Denah Location (1200 px X 500 px)</div>
+            <div class="px-6 py-3 text-xl font-bold">Status Pasien</div>
             <div class="">
               <button @click.self="showModalUpdateLocation" class="font-3xl font-bold p-6">&times;</button>
             </div>

@@ -277,7 +277,7 @@
             </div>
           </div>
           <div class="p-6 flex-grow">
-            Are You Sure To Continue Delete This Floor
+            Are You Sure To Continue Delete This Pasien
           </div>
           <div class="px-6 py-3 border-t">
             <div class="flex justify-end">
