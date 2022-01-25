@@ -3,7 +3,7 @@
     
     <button
       @click="showModal('insert', null)"
-      class="block px-3 h-9 hover:text-white focus:ring focus:ring-primary-default focus:ring-opacity-30 focus:outline-none rounded-md text-sm bg-app-default hover:bg-app-light text-white mb-3 font-bold">Tambah Pasien</button>
+      class="block px-3 h-9 hover:text-white focus:ring focus:ring-primary-default focus:ring-opacity-30 focus:outline-none rounded-md text-sm bg-app-default hover:bg-app-light text-white mb-3 font-bold">Tambah Kunjungan</button>
 
     <div class="w-full lg:w-1/4 pr-0 lg:pr-2">
       <input v-model="table.search" @keyup="searchSubscriber" type="text" class="w-full h-9 px-2 rounded-md border-2 border-gray-200 focus:outline-none focus:ring transition duration-200 mb-5" placeholder="Search name">
@@ -193,7 +193,7 @@
       <div class="z-50 relative p-3 mx-auto my-0 max-w-full" style="width: 1000px;">
         <div class="bg-white rounded shadow-lg border flex flex-col overflow-hidden">
           <div class="flex flex-row border-b items-center justify-between">
-            <div class="px-6 py-3 text-xl font-bold">Tambah Pasien</div>
+            <div class="px-6 py-3 text-xl font-bold">Edit Data Kunjungan Pasien</div>
             <div class="">
               <button @click.self="showModalPasien" class="font-3xl font-bold p-6">&times;</button>
             </div>
@@ -270,7 +270,7 @@
             </div>
           </div>
           <div class="p-6 flex-grow">
-            Are You Sure To Continue Delete This Floor
+            Are You Sure To Continue Delete This Visitor
           </div>
           <div class="px-6 py-3 border-t">
             <div class="flex justify-end">
